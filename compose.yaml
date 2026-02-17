@@ -5,6 +5,9 @@ services:
       dockerfile: docker/Dockerfile
     environment:
       APP_PORT: "8080"
+      WEB_CONCURRENCY: "2"
+      GUNICORN_THREADS: "2"
+      LOG_LEVEL: "info"
     ports:
       - "8080:8080"
     healthcheck:
