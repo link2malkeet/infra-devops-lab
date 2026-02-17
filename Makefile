@@ -1,16 +1,18 @@
 
-.PHONY: help up down build logs ps curl health ready
+.PHONY: help up down build logs ps curl health ready metrics test
 
 help:
 	@echo "Targets:"
-	@echo "  make up      - build and start"
-	@echo "  make down    - stop"
+	@echo "  make up      - build and start all services"
+	@echo "  make down    - stop all services"
 	@echo "  make build   - build images"
 	@echo "  make logs    - follow logs"
 	@echo "  make ps      - show containers"
-	@echo "  make curl    - call /"
+	@echo "  make curl    - call / (via Nginx)"
 	@echo "  make health  - call /healthz"
 	@echo "  make ready   - call /readyz"
+	@echo "  make metrics - view Prometheus metrics"
+	@echo "  make test    - run all health checks"
 
 up:
 	docker compose up --build
@@ -28,10 +30,20 @@ ps:
 	docker compose ps
 
 curl:
-	curl -s http://localhost:8080/ | python -m json.tool
+	@echo "Testing via Nginx (port 80)..."
+	curl -s http://localhost/ | python -m json.tool
 
 health:
-	curl -s http://localhost:8080/healthz | python -m json.tool
+	@echo "Testing health endpoint..."
+	curl -s http://localhost/healthz | python -m json.tool
 
 ready:
-	curl -s http://localhost:8080/readyz | python -m json.tool
+	@echo "Testing readiness endpoint..."
+	curl -s http://localhost/readyz | python -m json.tool
+
+metrics:
+	@echo "Fetching Prometheus metrics..."
+	curl -s http://localhost/metrics | head -20
+
+test: health ready
+	@echo "All health checks passed!"
