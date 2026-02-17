@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: infra-devops-lab
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - nginx-configmap.yaml
+  - app-deployment.yaml
+  - app-service.yaml
+  - nginx-deployment.yaml
+  - nginx-service.yaml
+  # - ingress.yaml  # Uncomment if using ingress
